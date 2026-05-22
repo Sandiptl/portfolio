@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart Water Heater — Brainstorming Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Permanent+Marker&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ece3d2;
+    --paper-2: #e2d6c0;
+    --ink: #1f1a14;
+    --ink-soft: #4a4036;
+    --tape: rgba(255, 234, 138, 0.72);
+    --tape-blue: rgba(168, 215, 230, 0.68);
+
+    --c1: #f4d35e; --c2: #f8a07b; --c3: #b8d8a8; --c4: #f29ca3;
+    --c5: #d4a5d8; --c6: #9cc5e8; --c7: #ffcc99; --c8: #cfc6b3;
+
+    --p1: #d63027;
+    --p2: #1d6fb8;
+    --p3: #2a8a3e;
+    --p4: #b8431f;
+    --p5: #6b3aa8;
+
+    --shadow-note: 0 6px 14px rgba(40, 28, 14, 0.18), 0 2px 4px rgba(40, 28, 14, 0.12);
+    --shadow-deep: 0 14px 28px rgba(40, 28, 14, 0.18), 0 4px 8px rgba(40, 28, 14, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    min-height: 100vh;
+  }
+  /* overflow-x: clip prevents horizontal scroll from rotated post-its
+     WITHOUT creating a scroll container — this is critical for position: sticky
+     descendants to actually stick. overflow: hidden would break sticky on most browsers. */
+  body {
+    overflow-x: clip;
+  }
+
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,255,255,0.45), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(120, 90, 40, 0.08), transparent 50%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.10 0 0 0 0 0.06 0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: cover, cover, 180px 180px;
+    opacity: 0.85;
+    z-index: 0;
+    mix-blend-mode: multiply;
+  }
+
+  .stage {
+    position: relative; z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+  }
+
+  /* Header */
+  header.workshop {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px dashed rgba(40, 28, 14, 0.25);
+    margin-bottom: 8px;
+  }
+  .title-block .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin: 0 0 6px 4px;
+  }
+  .title-block h1 {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 0.95;
+    margin: 0;
+    color: var(--ink);
+    transform: rotate(-1deg);
+  }
+  .title-block h1 .ink {
+    background: linear-gradient(transparent 62%, rgba(244,211,94,0.72) 62%, rgba(244,211,94,0.72) 92%, transparent 92%);
+    padding: 0 6px;
+  }
+  .meta {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--ink-soft);
+    text-align: right;
+    line-height: 1.2;
+  }
+  .meta .date { font-weight: 600; }
+
+  /* Tabs */
+  .toggle-row {
+    display: flex; align-items: center; gap: 16px;
+    margin: 24px 0 30px;
+    flex-wrap: wrap;
+  }
+  .stage-tabs {
+    display: inline-flex;
+    background: var(--paper-2);
+    padding: 4px;
+    border-radius: 999px;
+    box-shadow: inset 0 2px 4px rgba(40,28,14,0.08), 0 1px 0 rgba(255,255,255,0.4);
+    border: 1px solid rgba(40,28,14,0.1);
+  }
+  .stage-tabs button {
+    border: 0;
+    background: transparent;
+    padding: 10px 20px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+  }
+  .stage-tabs button.active {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 2px 6px rgba(40,28,14,0.25);
+  }
+  .stage-tabs button .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    opacity: 0.6;
+    margin-right: 8px;
+  }
+  .stage-tabs button.active .num { opacity: 0.85; }
+
+  .legend {
+    margin-left: auto;
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    align-items: center;
+  }
+  /* Header legend is hidden when the wall is the active tab (the vote-bar shows its own legend) */
+  body.wall-active .toggle-row > .legend { display: none; }
+  .legend-dot { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-dot::before {
+    content: "";
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    background: var(--c);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  .section-intro { margin: 30px 0 24px; max-width: 820px; }
+  .section-intro h2 {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 30px;
+    margin: 0 0 8px;
+    transform: rotate(-0.5deg);
+    color: var(--ink);
+  }
+  .section-intro p {
+    font-family: 'Fraunces', serif;
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ============================================================
+     STAGE 1: Post-it wall with job-step sub-headers
+     ============================================================ */
+  .wall { display: none; }
+  .wall.active { display: block; }
+
+  .area-group { margin-bottom: 66px; }
+  .area-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(40,28,14,0.25);
+  }
+  .area-num {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--ink);
+    opacity: 0.18;
+  }
+  .area-title {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--ink);
+    transform: rotate(-0.3deg);
+    margin: 0;
+  }
+  .area-swatch {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    background: var(--c);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+    transform: rotate(-4deg);
+  }
+  .area-sub {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin: 0 0 22px 4px;
+    font-style: italic;
+  }
+
+  /* Job-step sub-header — the action verb objective from the brief */
+  .job-step {
+    margin-top: 32px;
+    margin-bottom: 18px;
+    padding: 14px 18px 14px 16px;
+    background: rgba(255, 250, 240, 0.5);
+    border-left: 4px solid var(--c);
+    border-radius: 0 4px 4px 0;
+    position: relative;
+  }
+  .job-step .step-num {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.12em;
+    margin-bottom: 5px;
+    background: rgba(40,28,14,0.06);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .job-step h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin: 0 0 6px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .job-step p {
+    font-family: 'Fraunces', serif;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 800px;
+  }
+  .job-step .targets {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .job-step .target {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    background: rgba(40,28,14,0.08);
+    color: var(--ink-soft);
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .job-step .target.max { background: rgba(46, 138, 62, 0.15); color: #1f5e2a; }
+  .job-step .target.min { background: rgba(214, 48, 39, 0.13); color: #8a2218; }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 22px 18px;
+    padding: 6px;
+  }
+  .note {
+    position: relative;
+    background: var(--c);
+    padding: 18px 16px 38px;
+    min-height: 140px;
+    box-shadow: var(--shadow-note);
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    line-height: 1.25;
+    color: #1c1408;
+    transform: rotate(var(--rot, -1.5deg));
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .note.disabled { cursor: not-allowed; opacity: 0.7; }
+  .note.disabled:hover {
+    transform: rotate(var(--rot, -1.5deg));
+    box-shadow: var(--shadow-note);
+  }
+  .note:nth-child(3n)   { --rot: 1.4deg;  }
+  .note:nth-child(3n+1) { --rot: -1.8deg; }
+  .note:nth-child(3n+2) { --rot: 0.7deg;  }
+  .note:nth-child(5n)   { --rot: -0.9deg; }
+  .note:nth-child(7n)   { --rot: 2.1deg;  }
+  .note:hover {
+    transform: rotate(0deg) translateY(-4px) scale(1.03);
+    box-shadow: var(--shadow-deep);
+    z-index: 5;
+  }
+  .note::before {
+    content: "";
+    position: absolute;
+    top: -10px; left: 50%;
+    width: 56px; height: 18px;
+    background: var(--tape);
+    transform: translateX(-50%) rotate(-3deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    opacity: 0;
+  }
+  .note:nth-child(4n)::before { opacity: 1; }
+  .note:nth-child(7n)::before { opacity: 1; background: var(--tape-blue); transform: translateX(-50%) rotate(4deg); }
+  .note .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(28,20,8,0.55);
+    margin-bottom: 6px;
+    border-bottom: 1px dotted rgba(28,20,8,0.3);
+    padding-bottom: 2px;
+  }
+  .note .body { display: block; font-weight: 500; }
+
+  /* "+ add idea" tile — looks like a ghost sticky waiting to be filled in */
+  .note-add {
+    position: relative;
+    background: transparent;
+    border: 2px dashed rgba(40,28,14,0.32);
+    padding: 18px 12px;
+    min-height: 140px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Caveat', cursive;
+    color: var(--ink-soft);
+    transition: all 0.2s ease;
+    transform: rotate(-0.5deg);
+  }
+  .note-add:hover {
+    background: rgba(255, 250, 240, 0.55);
+    border-color: var(--ink);
+    color: var(--ink);
+    transform: rotate(0) translateY(-2px);
+    box-shadow: var(--shadow-note);
+  }
+  .note-add .plus {
+    font-family: 'Fraunces', serif;
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 0.8;
+    color: inherit;
+  }
+  .note-add .add-label {
+    font-size: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Notes added by users during voting get a subtle dashed inner outline + corner marker */
+  .note.user-added,
+  .aff-note.user-added {
+    box-shadow: var(--shadow-note), inset 0 0 0 1px rgba(40,28,14,0.35);
+  }
+  .note.user-added::after,
+  .aff-note.user-added::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    border-style: solid;
+    border-width: 0 14px 14px 0;
+    border-color: transparent rgba(40,28,14,0.4) transparent transparent;
+  }
+  .user-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(28,20,8,0.65);
+    font-weight: 600;
+  }
+
+  /* Edit / delete controls on user-added notes */
+  .note-controls {
+    position: absolute;
+    top: 6px; right: 6px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 6;
+  }
+  .note:hover .note-controls,
+  .aff-note:hover .note-controls { opacity: 1; }
+  .note-controls button {
+    width: 22px; height: 22px;
+    padding: 0;
+    border: 1px solid rgba(40,28,14,0.25);
+    background: rgba(255, 250, 240, 0.92);
+    color: var(--ink);
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .note-controls button:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .note-controls .note-delete:hover {
+    background: #a02020;
+    border-color: #a02020;
+  }
+
+  /* ============================================================
+     STAGE 2: Affinity — two-column post-it flow
+     ============================================================ */
+  .affinity { display: none; }
+  .affinity.active { display: block; }
+
+  /* 2 × 3 grid of cluster boxes, each scrolls internally */
+  .affinity-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 32px;
+  }
+  @media (max-width: 900px) {
+    .affinity-columns { grid-template-columns: 1fr; }
+  }
+
+  .cluster-block {
+    background: rgba(255, 250, 240, 0.55);
+    border: 1.5px solid rgba(40, 28, 14, 0.16);
+    border-radius: 6px;
+    padding: 22px 22px 18px;
+    position: relative;
+    box-shadow: 0 3px 12px rgba(40,28,14,0.07);
+    display: flex;
+    flex-direction: column;
+    height: 560px; /* fixed height — content inside scrolls */
+  }
+  /* tape decorations on the box itself */
+  .cluster-block::before {
+    content: "";
+    position: absolute;
+    top: -13px; left: 24px;
+    width: 86px; height: 22px;
+    background: var(--tape);
+    transform: rotate(-3deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    z-index: 2;
+  }
+  .cluster-block:nth-child(even)::before {
+    background: var(--tape-blue);
+    transform: rotate(3deg);
+    left: auto; right: 24px;
+  }
+
+  .cluster-banner {
+    flex-shrink: 0;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1.5px dashed rgba(40,28,14,0.2);
+  }
+  .cluster-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .cluster-title {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--ink);
+    margin: 0 0 6px;
+    transform: rotate(-0.4deg);
+  }
+  .cluster-insight {
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  /* Scrolling note area — 2-column post-it grid inside */
+  .cluster-notes-flow {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px 6px 14px 6px;
+    margin: 0 -6px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 18px;
+    align-content: start;
+  }
+  /* Soft scrollbar styling */
+  .cluster-notes-flow::-webkit-scrollbar { width: 8px; }
+  .cluster-notes-flow::-webkit-scrollbar-track {
+    background: rgba(40,28,14,0.05);
+    border-radius: 4px;
+  }
+  .cluster-notes-flow::-webkit-scrollbar-thumb {
+    background: rgba(40,28,14,0.22);
+    border-radius: 4px;
+  }
+  .cluster-notes-flow::-webkit-scrollbar-thumb:hover {
+    background: rgba(40,28,14,0.38);
+  }
+  .cluster-notes-flow {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(40,28,14,0.22) rgba(40,28,14,0.05);
+  }
+
+  /* Chunkier post-it style matching the screenshot */
+  .aff-note {
+    position: relative;
+    background: var(--c);
+    padding: 14px 14px 34px;
+    box-shadow: var(--shadow-note);
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    line-height: 1.3;
+    color: #1c1408;
+    border-radius: 2px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    transform: rotate(var(--rot, -0.8deg));
+    transition: transform 0.2s ease, box-shadow 0.2s ease, z-index 0s linear 0.2s;
+    cursor: pointer;
+  }
+  .aff-note.disabled { cursor: not-allowed; opacity: 0.7; }
+  .aff-note.disabled:hover {
+    transform: rotate(var(--rot, -0.8deg));
+    box-shadow: var(--shadow-note);
+  }
+  .aff-note:nth-child(3n)   { --rot: 1.0deg;  }
+  .aff-note:nth-child(3n+1) { --rot: -1.4deg; }
+  .aff-note:nth-child(3n+2) { --rot: 0.5deg;  }
+  .aff-note:nth-child(5n)   { --rot: -0.7deg; }
+  .aff-note:nth-child(7n)   { --rot: 1.8deg;  }
+  .aff-note:hover {
+    transform: rotate(0deg) translateY(-3px) scale(1.03);
+    box-shadow: var(--shadow-deep);
+    z-index: 5;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  /* tape on some notes for variety, just like the screenshot */
+  .aff-note::before {
+    content: "";
+    position: absolute;
+    top: -8px; right: 14px;
+    width: 38px; height: 14px;
+    background: var(--tape);
+    transform: rotate(-6deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    opacity: 0;
+  }
+  .aff-note:nth-child(4n)::before { opacity: 1; }
+  .aff-note:nth-child(6n)::before { opacity: 1; background: var(--tape-blue); transform: rotate(5deg); left: 14px; right: auto; }
+
+  .aff-note .origin {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: rgba(28,20,8,0.55);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    border-bottom: 1px dotted rgba(28,20,8,0.3);
+    padding-bottom: 3px;
+    text-transform: uppercase;
+  }
+  .aff-note .text {
+    display: block;
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .synthesis {
+    margin-top: 56px;
+    padding: 28px 26px;
+    background: linear-gradient(180deg, rgba(31,26,20,0.96), rgba(31,26,20,0.92));
+    color: var(--paper);
+    border-radius: 8px;
+  }
+  .synthesis h3 {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 26px;
+    margin: 0 0 14px;
+    color: var(--paper);
+    transform: rotate(-0.3deg);
+  }
+  .synthesis p {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(236, 227, 210, 0.88);
+    margin: 0 0 10px;
+  }
+  .synthesis ol {
+    font-family: 'Fraunces', serif;
+    color: rgba(236, 227, 210, 0.94);
+    padding-left: 22px;
+    line-height: 1.65;
+  }
+  .synthesis ol li { margin-bottom: 6px; }
+  .synthesis ol li strong { color: var(--c1); font-weight: 600; }
+
+  /* ============================================================
+     STAGE 3: Dot Voting — INTEGRATED AS STICKY TOP BAR ABOVE JOBS
+     ============================================================ */
+
+  .vote-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    margin: 0 -28px 26px;
+    padding: 14px 28px 16px;
+    border-bottom: 2px dashed rgba(40,28,14,0.22);
+    box-shadow: 0 8px 18px -10px rgba(40,28,14,0.35);
+  }
+  .vote-bar-inner {
+    /* no width constraint needed — the outer .stage already centers and caps width */
+  }
+  /* Mobile: bar returns to normal flow, no stickiness */
+  @media (max-width: 900px) {
+    .vote-bar {
+      position: static;
+      box-shadow: none;
+    }
+  }
+
+  /* Top row: legend on left, voting-as panel on right */
+  .vote-bar-top {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 22px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 900px) {
+    .vote-bar-top {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .vote-bar-legend {
+    background: rgba(255, 250, 240, 0.55);
+    border: 1.5px solid rgba(40, 28, 14, 0.18);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    align-content: center;
+  }
+  .vote-bar-legend .legend-dot { display: inline-flex; align-items: center; gap: 6px; }
+
+  .vote-bar-panel {
+    background: rgba(255, 250, 240, 0.7);
+    border: 1.5px solid rgba(40, 28, 14, 0.2);
+    border-radius: 6px;
+    padding: 12px 16px 14px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(40,28,14,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .vote-bar-panel::before {
+    content: "";
+    position: absolute;
+    top: -10px; left: 22px;
+    width: 80px; height: 18px;
+    background: var(--tape);
+    transform: rotate(-2deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .vote-bar-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .vote-bar-titles h4 {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 20px;
+    margin: 0;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .vote-bar-titles .sub {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* Participant tags: compact vertical card — dot + count on top, name + role below, bar at the bottom */
+  .participants-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .participant {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 7px 10px 6px;
+    background: rgba(255,255,255,0.55);
+    border: 1.5px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Fraunces', serif;
+    flex: 1 1 0;
+    min-width: 96px;
+    max-width: 140px;
+    overflow: hidden;
+  }
+  .participant:hover { background: rgba(255,255,255,0.85); }
+  .participant.active {
+    border-color: var(--pc);
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 2px 6px rgba(40,28,14,0.12);
+  }
+  .participant .p-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 1px;
+  }
+  .participant .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--pc);
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  .participant .p-budget {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .participant .p-budget .used {
+    color: var(--pc);
+    font-weight: 700;
+  }
+  .participant .p-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .participant .p-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  /* Slim progress bar pinned to the bottom edge of the card */
+  .budget-bar {
+    margin-top: 4px;
+    height: 3px;
+    background: rgba(40,28,14,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .budget-bar-fill {
+    height: 100%;
+    background: var(--pc);
+    transition: width 0.25s ease;
+    border-radius: 2px;
+  }
+
+  .vote-actions {
+    display: flex; gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn {
+    border: 1.5px solid rgba(40,28,14,0.25);
+    background: transparent;
+    color: var(--ink);
+    padding: 7px 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.danger { border-color: rgba(214,48,39,0.4); color: #a02020; }
+  .btn.danger:hover { background: #a02020; color: var(--paper); border-color: #a02020; }
+
+  /* Leaderboard block below the top row */
+  .vote-bar-leaderboard {
+    background: rgba(255, 250, 240, 0.55);
+    border: 1.5px solid rgba(40, 28, 14, 0.18);
+    border-radius: 6px;
+    padding: 12px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .vote-bar-leaderboard-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .vote-bar-leaderboard-head h4 {
+    font-family: 'Permanent Marker', cursive;
+    font-weight: 400;
+    font-size: 18px;
+    margin: 0;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .vote-bar-leaderboard-head .sub {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .lb-download {
+    padding: 5px 11px;
+    font-size: 11.5px;
+    border-color: rgba(40,28,14,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+    align-self: center;
+  }
+  .lb-download:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: transparent;
+    color: var(--ink-soft);
+  }
+  .lb-download:disabled:hover {
+    background: transparent;
+    color: var(--ink-soft);
+  }
+  .vote-bar-instructions {
+    font-family: 'Fraunces', serif;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin-left: auto;
+    padding-left: 12px;
+    border-left: 2px solid rgba(40,28,14,0.18);
+  }
+  .vote-bar-instructions .active-as {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper);
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    background: var(--p1);
+  }
+  @media (max-width: 700px) {
+    .vote-bar-instructions { margin-left: 0; border-left: 0; padding-left: 0; flex-basis: 100%; }
+  }
+
+  /* Leaderboard: 2-column grid, 3 rows visible, scroll for the rest */
+  .vote-bar-leaderboard ol {
+    margin: 0; padding: 0;
+    list-style: none;
+    counter-reset: lb;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    /* 3 rows of 48px + 2 gaps of 6px = 156px */
+    max-height: calc(3 * 48px + 2 * 6px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .vote-bar-leaderboard ol::-webkit-scrollbar { width: 6px; }
+  .vote-bar-leaderboard ol::-webkit-scrollbar-track {
+    background: rgba(40,28,14,0.05);
+    border-radius: 3px;
+  }
+  .vote-bar-leaderboard ol::-webkit-scrollbar-thumb {
+    background: rgba(40,28,14,0.22);
+    border-radius: 3px;
+  }
+  .vote-bar-leaderboard ol {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(40,28,14,0.22) rgba(40,28,14,0.05);
+  }
+  @media (max-width: 700px) {
+    .vote-bar-leaderboard ol { grid-template-columns: 1fr; max-height: calc(3 * 48px + 2 * 6px); }
+  }
+
+  .lb-item {
+    position: relative;
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(40,28,14,0.15);
+    border-radius: 5px;
+    padding: 4px 8px 4px 22px;
+    counter-increment: lb;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 8px;
+    height: 48px;
+    box-shadow: 0 1px 2px rgba(40,28,14,0.05);
+  }
+  .lb-item::before {
+    content: counter(lb);
+    position: absolute;
+    top: 50%; left: 6px;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    opacity: 0.7;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .lb-text {
+    font-family: 'Caveat', cursive;
+    font-size: 14.5px;
+    color: var(--ink);
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-width: 0;
+  }
+  .lb-votes {
+    display: flex; gap: 2px;
+    align-items: center;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+    max-width: 80px;
+  }
+  .lb-votes .mini-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--pc);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+  .lb-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 4px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1px 5px;
+    border-radius: 3px;
+    line-height: 1.3;
+  }
+  .lb-empty {
+    grid-column: 1 / -1;
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 14px 8px;
+    font-style: italic;
+  }
+
+  .dots-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+    min-height: 18px;
+    pointer-events: none;
+  }
+  .placed-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--pc);
+    box-shadow:
+      inset -1px -1px 2px rgba(0,0,0,0.25),
+      inset 1px 1px 2px rgba(255,255,255,0.25),
+      0 1px 2px rgba(0,0,0,0.2);
+    animation: pop-in 0.25s cubic-bezier(.5,1.6,.4,1) both;
+    flex-shrink: 0;
+  }
+  @keyframes pop-in {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .footnote {
+    margin-top: 36px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .stage { padding: 24px 16px 60px; }
+    header.workshop { grid-template-columns: 1fr; }
+    .meta { text-align: left; }
+    .legend { margin-left: 0; }
+    .notes-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <header class="workshop">
+    <div class="title-block">
+      <p class="eyebrow">Brainstorming Workshop · Output</p>
+      <h1>Smart Water Heater <br><span class="ink">Idea Wall</span></h1>
+    </div>
+    <div class="meta">
+      <div class="date">Nagpur, MH · May 2026</div>
+      <div>8 problem areas · 22 job steps · 101 ideas · 5 × 25 dots in context</div>
+    </div>
+  </header>
+
+  <div class="toggle-row">
+    <div class="stage-tabs" role="tablist">
+      <button class="active" data-view="wall"><span class="num">01</span>Post-its &amp; Voting</button>
+      <button data-view="affinity"><span class="num">02</span>Affinity Map</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <section class="wall active" id="wall">
+    <div class="section-intro">
+      <h2>Step 1 — Post-its &amp; Dot Voting</h2>
+      <p>Each problem area is broken into its <strong>job steps</strong> — the action-verb objectives the system has to perform. Under every job step is a short description of what it means, followed by the brainstormed Post-its for that step. The voting bar above stays pinned as you scroll — pick your participant, then <strong>click any Post-it to place a dot</strong>. You're voting in context, so you can read what the job step is actually trying to achieve before deciding where to spend your dots. Alt-click stacks an extra dot on the same idea.</p>
+    </div>
+
+    <div class="vote-bar" id="vote-bar">
+      <div class="vote-bar-inner">
+        <div class="vote-bar-top">
+          <div class="legend vote-bar-legend" id="legend-vbar"></div>
+
+          <div class="vote-bar-panel">
+            <div class="vote-bar-panel-head">
+              <div class="vote-bar-titles">
+                <h4>Voting as</h4>
+                <p class="sub">Pick your participant. 25 dots each.</p>
+              </div>
+              <div class="vote-actions">
+                <button class="btn" id="reset-me">Reset my dots</button>
+                <button class="btn danger" id="reset-all">Reset all</button>
+              </div>
+            </div>
+            <div class="participants-row" id="participants"></div>
+          </div>
+        </div>
+
+        <div class="vote-bar-leaderboard">
+          <div class="vote-bar-leaderboard-head">
+            <h4>Leaderboard</h4>
+            <p class="sub">Top ideas by votes received</p>
+            <button class="btn lb-download" id="download-leaderboard" title="Download all voted ideas as CSV">
+              ↓ Download CSV
+            </button>
+            <span class="vote-bar-instructions" id="vote-instructions">
+              Voting as <span class="active-as" id="active-as">P1 · Anaya</span> · click a Post-it to place a dot · Alt-click stacks extra dots
+            </span>
+          </div>
+          <ol id="leaderboard"></ol>
+        </div>
+      </div>
+    </div>
+
+    <div id="areas-container"></div>
+  </section>
+
+  <section class="affinity" id="affinity">
+    <div class="section-intro">
+      <h2>Step 2 — Affinity Mapping</h2>
+      <p>The same notes regrouped by what they have in common rather than where they came from. Nine clusters laid out in a 2 × 3 grid — scroll inside each box to see all its Post-its. Each sticky keeps its origin color so you can see which problem areas each theme draws from.</p>
+    </div>
+    <div class="affinity-columns" id="clusters-container"></div>
+
+    <div class="synthesis">
+      <h3>What the map tells us</h3>
+      <p>The same six engineering primitives keep showing up across all eight problem areas. If a product team built these six building blocks well, it would solve <em>most</em> of the problem statements in the brief — not by attacking each one separately.</p>
+      <ol>
+        <li><strong>A multi-sensor mesh</strong> (TDS, leak, acoustic, pressure, temperature, current) — feeds clusters A, D, and F.</li>
+        <li><strong>An edge AI + digital-twin layer</strong> that predicts wear, depletion, and failure — feeds cluster B.</li>
+        <li><strong>A thermostatic mixing valve + dual-zone outlet control</strong> — feeds cluster D.</li>
+        <li><strong>A modular hardware architecture</strong> with replaceable anode, element, electronics — feeds clusters D and H.</li>
+        <li><strong>A family-aware companion app</strong> with profiles, scheduling, status, alerts — feeds clusters C and E.</li>
+        <li><strong>A predictive-maintenance subscription</strong> backed by telemetry + auto-dispatched parts — feeds cluster H.</li>
+      </ol>
+    </div>
+  </section>
+
+  <p class="footnote">— workshop board · post-its + vote → affinity → decide —</p>
+
+</div>
+
+<script>
+  // =================== DATA ===================
+  const areas = [
+    { id: 1, color: 'c1', title: 'Tank & Water Integrity',         short: 'Integrity',     sub: 'Corrosion · Scaling · Hygiene' },
+    { id: 2, color: 'c2', title: 'Long-Term Wear & Reliability',   short: 'Reliability',   sub: 'Pressure · Voltage · Thermal cycles' },
+    { id: 3, color: 'c3', title: 'Shared Household Coordination',  short: 'Coordination',  sub: 'Bathing order · Hot water reserve' },
+    { id: 4, color: 'c4', title: 'Scalding Prevention',            short: 'Scalding',      sub: 'Children · Elderly · Vulnerable users' },
+    { id: 5, color: 'c5', title: 'Catastrophic Failure Detection', short: 'Failure',       sub: 'Leaks · Shocks · Overpressure · CO' },
+    { id: 6, color: 'c6', title: 'Uninterrupted Shower Comfort',   short: 'Comfort',       sub: 'No cold-water shock' },
+    { id: 7, color: 'c7', title: 'Reliability Confidence',         short: 'Confidence',    sub: 'Daily emotional assurance' },
+    { id: 8, color: 'c8', title: 'Radical / Cross-cutting',        short: 'Cross-cutting', sub: 'Future concepts · Strategic moats' }
+  ];
+
+  // Job steps — one per area, with description + Max/Min targets from the brief
+  // Each idea now references a `js` (job-step) number within its area.
+  const jobSteps = {
+    1: [
+      { n: 1, title: 'Identify water chemistry, hardness, and sediment exposure',
+        desc: 'Profile the incoming water before doing anything else. Measure TDS, hardness, pH, and visible sediment so the rest of the system can be tuned for the real input — not a generic spec sheet.',
+        targets: [['max','Accuracy of water chemistry assessment'], ['min','Time to characterize hardness & sediment'], ['min','Likelihood of mischaracterizing water inputs']] },
+      { n: 2, title: 'Sacrificially corrode the anode and contain scale at tank bottom',
+        desc: 'During operation the anode rod and tank geometry do the actual protective work — the anode takes the corrosion hit, and the tank shape settles sediment safely below the heating element.',
+        targets: [['max','Sacrificial protection rate of anode'], ['min','Dispersion of scale into active water volume'], ['max','Containment of sediment at tank bottom']] },
+      { n: 3, title: 'Track anode depletion, scale buildup, and water clarity over time',
+        desc: 'Continuous monitoring so degradation never sneaks up on the user. Either smart sensors or visible/audible indicators that say: the anode is X% gone, scale is building, water is going cloudy.',
+        targets: [['max','Accuracy of anode depletion tracking'], ['min','Lag in detecting scale buildup'], ['min','Likelihood of missed clarity degradation']] },
+      { n: 4, title: 'Flush sediment, replace anode, or descale when thresholds are crossed',
+        desc: 'The maintenance response itself — fast, complete, and easy enough that it actually gets done. Quick-flush valves, modular anodes, effective descaling routines.',
+        targets: [['min','Time to flush sediment'], ['max','Effectiveness of descaling treatments'], ['min','Likelihood of incomplete anode replacement']] }
+    ],
+    2: [
+      { n: 1, title: 'Specify design life under hard water, pressure cycling, and voltage stress',
+        desc: 'Up-front engineering: choose materials, wall thickness, lining, and electrical protection sized to the actual stresses this heater will see, not generic assumptions.',
+        targets: [['max','Accuracy of design-life specification'], ['min','Under-specifying for hard-water environments'], ['min','Gap between target life and real-world service']] },
+      { n: 2, title: 'Identify environmental stressors: TDS, line pressure, voltage range',
+        desc: 'Measure the home: how hard is the water, how much do pressure and voltage actually swing in a typical day? These three numbers drive every reliability decision downstream.',
+        targets: [['max','Accuracy of TDS & pressure-swing characterization'], ['min','Time to characterize voltage stress'], ['min','Likelihood of missing a critical stressor']] },
+      { n: 3, title: 'Operate through daily thermal expansion and pressure cycles',
+        desc: 'Survive the brutal daily duty cycle — every heat-up expands the tank, every draw cycles the pressure. Joints, welds, and electronics need to absorb this without fatigue failure.',
+        targets: [['max','Cycle endurance under daily thermal expansion'], ['min','Fatigue accumulation per pressure cycle'], ['min','Likelihood of pressure-cycle-induced failure']] },
+      { n: 4, title: 'Extend useful service life to or beyond the warranty period',
+        desc: 'Reach the 8–10 year mark with capacity to spare, not on borrowed time. Catches premature retirement before the user is left holding a flooded bathroom.',
+        targets: [['max','Service life relative to warranty period'], ['min','Likelihood of premature retirement'], ['max','Residual reliability at end of warranty']] }
+    ],
+    3: [
+      { n: 1, title: 'Decide bathing order and time slots for the family',
+        desc: 'Plan the morning so the hot water reserve is allocated fairly and no one runs out. Manual rules, calendar slots, or smart prediction — whatever stops the daily negotiation.',
+        targets: [['max','Accuracy of bathing-order planning'], ['min','Overlapping high-draw events'], ['min','Time to map family schedules']] }
+    ],
+    4: [
+      { n: 1, title: 'Decide safe maximum tap temperature (typically 49 °C for vulnerable users)',
+        desc: 'Set the upper limit at the tap, not in the tank. 49 °C is the medical threshold below which a 5-second exposure won\'t scald skin. Define it once, lock it in.',
+        targets: [['max','Accuracy of safe-maximum tap-temperature definition'], ['min','Unsafe ceiling for vulnerable users'], ['min','Time to define vulnerable-user limits']] },
+      { n: 2, title: 'Operate the system with capped output temperature',
+        desc: 'Hold the line at the tap day after day — through pressure disturbances, mixed cold-line drops, and someone flushing a toilet mid-shower. A TMV does most of this physically; smart valves can do more.',
+        targets: [['max','Duration outlet temperature stays within safe cap'], ['min','Cap excursion under normal use'], ['min','Variation in delivered temperature']] }
+    ],
+    5: [
+      { n: 1, title: 'Define failure modes to watch (leaks, shocks, overpressure, CO)',
+        desc: 'List the actual things that can go catastrophically wrong before they happen. A complete list is the difference between a covered failure and a 3 AM emergency.',
+        targets: [['max','Completeness of failure-mode definition'], ['min','Overlooking a hazardous mode'], ['min','Time to define monitored failures']] },
+      { n: 2, title: 'Identify and locate detectors: leak sensors, RCD/ELCB, T&P valve, CO alarm',
+        desc: 'Match each failure mode to a specific detector at a specific location. Generic "smoke alarm somewhere" isn\'t enough — the right sensor has to be in the right spot.',
+        targets: [['max','Accuracy of detector identification & location'], ['min','Time to locate suitable detectors'], ['min','Missing a detector type']] },
+      { n: 3, title: 'Let the system operate normally under continuous detector watch',
+        desc: 'Detectors do their work silently in the background, 24/7. No batteries dying, no test failures, no unwatched gaps. Low-power, always-on.',
+        targets: [['max','Duration of continuous detector watch'], ['min','Unwatched periods'], ['min','Energy used by detector standby']] },
+      { n: 4, title: 'Continuously monitor detector status and unusual sounds, smells, or drips',
+        desc: 'Detectors aren\'t enough on their own — humans (and AI) need to actively scan for anomalies between sensor events. The slow-drip leak that no sensor caught, the burning-insulation smell at 2 AM.',
+        targets: [['max','Frequency of detector-status monitoring'], ['min','Lag in detecting unusual signs'], ['min','Missed alarm signals']] },
+      { n: 5, title: 'Shut off power, gas, and water; evacuate; call technician on alarm',
+        desc: 'The emergency response itself. Speed and reliability of the shutoff sequence, who knows what to do, and whether the right help is on the way.',
+        targets: [['min','Time to shut off power/gas/water'], ['max','Reliability of evacuation response'], ['min','Escalation before technician arrival']] },
+      { n: 6, title: 'Resolve root cause, reset detectors, and document the incident',
+        desc: 'After the all-clear: don\'t just reset and forget. Fix the actual underlying cause, log what happened, and update the maintenance schedule so it doesn\'t recur.',
+        targets: [['max','Completeness of root-cause resolution'], ['min','Resetting without fixing'], ['max','Documentation of the incident']] }
+    ],
+    6: [
+      { n: 1, title: 'Expect a steady, predictable warm stream for the full shower',
+        desc: 'Set the comfort baseline before the shower even starts. The user should know — explicitly or implicitly — how long the warm stream will last so there are no surprises.',
+        targets: [['max','Clarity of expectation for uninterrupted shower'], ['min','Unstated comfort baseline'], ['min','Time to set expectations']] },
+      { n: 2, title: 'Shower without interruption from start to finish',
+        desc: 'No cold shock, no temperature dip mid-shower, no mental load of watching the gauge. Hardware buffering, smart mixing, and predictive flow control make this real.',
+        targets: [['max','Duration of uninterrupted shower'], ['min','Mid-shower temperature dips'], ['min','Cognitive load of mid-shower vigilance']] }
+    ],
+    7: [
+      { n: 1, title: 'Decide reliability is non-negotiable for the household routine',
+        desc: 'The mindset commitment that comes before any hardware: reliability isn\'t a "nice to have," it\'s the price of admission. This shapes how the family budgets time, money, and maintenance.',
+        targets: [['max','Clarity of reliability as non-negotiable'], ['min','Treating reliability casually'], ['min','Time to commit to reliability as priority']] },
+      { n: 2, title: 'Use hot water daily with consistent on-demand availability',
+        desc: 'Day-in, day-out hot water that just works. Standby losses managed, recovery time predictable, no rationing during normal use.',
+        targets: [['max','Consistency of on-demand availability'], ['min','Unscheduled cold showers'], ['max','Proportion of days with full reliability']] },
+      { n: 3, title: 'Wake up each day expecting and getting a working hot shower',
+        desc: 'The emotional payoff: no morning dread, no checking the geyser before stepping in. Confidence built up over months of reliable performance.',
+        targets: [['max','Mornings starting with hot water'], ['min','Dread waking up'], ['max','Alignment between expected and actual reliability']] }
+    ],
+    8: [
+      { n: 1, title: 'Radical concepts and strategic moats',
+        desc: 'Ideas that don\'t fit any one job step — future-product visions, business-model levers, and the strategic IP that protects everything else from being commoditized.',
+        targets: [] }
+    ]
+  };
+
+  // Each idea now carries `js` (job step within its area)
+  const ideasRaw = [
+    // ===== Area 1 =====
+    { t: 'Integrated TDS + conductivity sensors learn local water profile', a:1, js:1, c:'A' },
+    { t: '"Water Stress Score" for the household', a:1, js:1, c:'B' },
+    { t: 'Polyphosphate doser for hard-water inlet', a:1, js:1, c:'D' },
+    { t: 'Whole-house sediment pre-filter upstream of heater', a:1, js:1, c:'D' },
+
+    { t: 'Dual-anode system: magnesium + powered titanium', a:1, js:2, c:'D' },
+    { t: 'Spiral inlet flow creates "dead sediment zone" at tank bottom', a:1, js:2, c:'D' },
+    { t: 'Transparent external sediment cartridge (premium variant)', a:1, js:2, c:'D' },
+    { t: 'UV-C mini sterilization chamber at outlet', a:1, js:2, c:'D' },
+
+    { t: 'AI-driven anode depletion estimation (TDS + cycles + temp)', a:1, js:3, c:'B' },
+    { t: 'LED health ring: green / amber / red anode status', a:1, js:3, c:'E' },
+
+    { t: 'Quick-flush valve ejects sediment in 30 seconds', a:1, js:4, c:'D' },
+    { t: 'Ball-valve drain extension (5-min flush, not 45)', a:1, js:4, c:'D' },
+    { t: 'Self-clean thermal pulse loosens early-stage scale', a:1, js:4, c:'F' },
+    { t: 'Micro-vibration actuator assists scale release', a:1, js:4, c:'F' },
+    { t: 'Weekly anti-legionella sterilization cycle', a:1, js:4, c:'F' },
+    { t: 'Smart stagnation flush after multi-day non-use', a:1, js:4, c:'F' },
+
+    // ===== Area 2 =====
+    { t: 'Internal expansion bladder absorbs pressure surges silently', a:2, js:1, c:'D' },
+    { t: 'Modular replaceable element / thermostat / anode', a:2, js:1, c:'D' },
+    { t: 'Reliability dashboard: thermal / water / electrical stress', a:2, js:1, c:'E' },
+
+    { t: 'Smart plug with energy monitoring detects scaling/element decay', a:2, js:2, c:'A' },
+    { t: 'Dedicated 3–4 kVA voltage stabilizer on geyser circuit', a:2, js:2, c:'D' },
+    { t: 'Pressure-reducing valve capped at 3–4 bar on inlet', a:2, js:2, c:'D' },
+    { t: 'Surge-energy absorption module on mains input', a:2, js:2, c:'D' },
+
+    { t: 'Digital twin tracks pressure / expansion / dry-heat cycles', a:2, js:3, c:'B' },
+    { t: 'Predictive PCB failure alerts via app', a:2, js:3, c:'B' },
+    { t: 'Slower ramp heating during unstable voltage', a:2, js:3, c:'F' },
+    { t: 'Soft-start triac control reduces thermal shock to element', a:2, js:3, c:'F' },
+    { t: 'Supercapacitor electronics backup survives brownouts', a:2, js:3, c:'D' },
+    { t: 'Thermostat set to 60 °C — not max — doubles element life', a:2, js:3, c:'G' },
+
+    { t: 'Real-time "Remaining Useful Life" indicator', a:2, js:4, c:'B' },
+    { t: 'Health-based warranty replaces fixed-year warranty', a:2, js:4, c:'H' },
+
+    // ===== Area 3 =====
+    { t: 'Family profiles learn preferred bath times & temps', a:3, js:1, c:'C' },
+    { t: 'AI predicts if enough hot water exists for everyone', a:3, js:1, c:'B' },
+    { t: 'Suggested optimized bathing sequence', a:3, js:1, c:'C' },
+    { t: 'Shower-slot reservation system, calendar-style', a:3, js:1, c:'C' },
+    { t: 'LED ring: full ready / one shower left / recovering', a:3, js:1, c:'E' },
+    { t: '"2 showers available at current temp" forecast', a:3, js:1, c:'B' },
+    { t: 'Couple Harmony Mode: gentle flow reduction near depletion', a:3, js:1, c:'C' },
+    { t: 'Pre-heat at 5:30 / 6:30 / 7:15 for staggered family use', a:3, js:1, c:'C' },
+    { t: 'House rule: dishwashing & laundry after last shower', a:3, js:1, c:'G' },
+    { t: 'Add 6L instant geyser at kitchen sink to isolate draws', a:3, js:1, c:'D' },
+    { t: 'Voice assistant: "Alexa, how much hot water left?"', a:3, js:1, c:'E' },
+    { t: 'Fridge whiteboard with morning shower slots', a:3, js:1, c:'G' },
+
+    // ===== Area 4 =====
+    { t: 'Child & Elder user profiles with max-temp caps', a:4, js:1, c:'C' },
+    { t: 'House rule: cold tap on first, hot tap second', a:4, js:1, c:'G' },
+    { t: 'Stick-on liquid crystal thermometer on shower wall', a:4, js:1, c:'E' },
+
+    { t: 'Thermostatic Mixing Valve set to 49 °C at outlet', a:4, js:2, c:'D' },
+    { t: 'Electronic SafeMix valve regulates outlet in real time', a:4, js:2, c:'D' },
+    { t: 'Voice activation: "Kid mode on" with PIN override', a:4, js:2, c:'E' },
+    { t: 'Thermal-shock prediction stabilizes mix before pressure spike', a:4, js:2, c:'B' },
+    { t: 'Wireless outlet sensor verifies actual delivered temp', a:4, js:2, c:'A' },
+    { t: 'Bathroom light strip: blue cold / white safe / red danger', a:4, js:2, c:'E' },
+    { t: 'Anti-scald pressure-balancing shower mixer', a:4, js:2, c:'D' },
+
+    // ===== Area 5 =====
+    { t: 'Multi-sensor mesh: leak + acoustic + arc + gas + pressure', a:5, js:1, c:'A' },
+
+    { t: 'Smart leak sensor under heater + drip-tray drain line', a:5, js:2, c:'A' },
+    { t: 'T&P relief discharge piped to visible drain point', a:5, js:2, c:'D' },
+    { t: '30 mA RCD/ELCB on geyser circuit, tested monthly', a:5, js:2, c:'D' },
+    { t: 'Battery-backed CO alarm in bathroom (for gas)', a:5, js:2, c:'A' },
+
+    { t: 'Acoustic anomaly detection learns household sound profile', a:5, js:3, c:'A' },
+
+    { t: 'AI signature detection: drips, boiling, relay chatter', a:5, js:4, c:'B' },
+    { t: '"Incident Black Box" stores pre-failure telemetry', a:5, js:4, c:'B' },
+    { t: 'Severity projection: minor leak / urgent / evacuate', a:5, js:4, c:'B' },
+    { t: 'Weekly 30-sec walk-around: listen, smell, look', a:5, js:4, c:'G' },
+
+    { t: 'Autonomous shutdown: power + water + pressure relief', a:5, js:5, c:'H' },
+    { t: 'Auto-notify technician network on critical alarm', a:5, js:5, c:'H' },
+    { t: 'Family alert group: whoever is home responds first', a:5, js:5, c:'C' },
+    { t: 'Labeled breaker + inlet valve — everyone knows where', a:5, js:5, c:'G' },
+
+    // Area 5 has no idea explicitly for step 6 (resolve root cause) but we can omit empty step or
+    // place documentation-related ones there. We'll skip step 6 to keep the wall honest.
+
+    // ===== Area 6 =====
+    { t: 'Real-time "warm minutes remaining" display', a:6, js:1, c:'E' },
+    { t: 'Pre-heat learned shower times', a:6, js:1, c:'B' },
+    { t: '"Navy shower" pattern for last user in queue', a:6, js:1, c:'G' },
+
+    { t: 'Predictive Shower Energy Engine adjusts element + flow + mix', a:6, js:2, c:'B' },
+    { t: 'Twin-tank cascade prevents temperature cliff', a:6, js:2, c:'D' },
+    { t: 'Hidden "comfort reserve" buffer of hot water', a:6, js:2, c:'D' },
+    { t: 'Shower Continuity modes: fast recovery / comfort / long', a:6, js:2, c:'C' },
+    { t: 'Recirculation pump for instant hot water at tap', a:6, js:2, c:'D' },
+    { t: 'Low-flow shower head (6–8 L/min) extends tank duration', a:6, js:2, c:'D' },
+    { t: 'Storage at 65 °C + TMV = ~30% more effective capacity', a:6, js:2, c:'D' },
+    { t: 'Instant booster geyser kicks in when storage temp drops', a:6, js:2, c:'D' },
+    { t: 'Gentle temperature ramp-up at shower start', a:6, js:2, c:'F' },
+
+    // ===== Area 7 =====
+    { t: 'Annual AMC with OEM or trusted local technician', a:7, js:1, c:'H' },
+    { t: 'Proactive replacement at year 8–9 of 10-yr life', a:7, js:1, c:'G' },
+    { t: 'Household "geyser log" inside bathroom cabinet door', a:7, js:1, c:'G' },
+
+    { t: 'Predictive maintenance subscription auto-orders parts', a:7, js:2, c:'H' },
+    { t: 'Backup 4 kW instant geyser at primary shower fixture', a:7, js:2, c:'D' },
+    { t: 'Vacation Guardian Mode: anti-freeze + anti-bacterial circ.', a:7, js:2, c:'F' },
+    { t: 'Silent overnight self-diagnostics', a:7, js:2, c:'F' },
+    { t: 'Public reliability score: "99.2% hot-water availability"', a:7, js:2, c:'H' },
+
+    { t: 'Daily "system healthy" morning notification', a:7, js:3, c:'E' },
+    { t: 'Warm ambient light when system ready', a:7, js:3, c:'E' },
+    { t: 'Calm startup sounds, low-anxiety alarms', a:7, js:3, c:'E' },
+
+    // ===== Area 8 =====
+    { t: 'Autonomous heater: self-diagnose, self-order, self-book', a:8, js:1, c:'H' },
+    { t: 'Distributed thermal-battery modules for redundancy', a:8, js:1, c:'D' },
+    { t: 'Integration with solar + smart grid + tariff signals', a:8, js:1, c:'H' },
+    { t: 'Ultra-flat wall-integrated invisible heater concept', a:8, js:1, c:'I' },
+    { t: 'Emotional Intelligence: learns moods, prepares comfort shower', a:8, js:1, c:'B' },
+    { t: 'Modular Moat: high-CapEx core + OTA-updatable panels', a:8, js:1, c:'H' },
+    { t: 'Proprietary edge-control logic as the real IP', a:8, js:1, c:'H' },
+    { t: 'Hard-water cartridge sold as subscription (LTV play)', a:8, js:1, c:'H' },
+    { t: 'In-app digital handshake locks heater until certified install', a:8, js:1, c:'H' },
+    { t: 'Pebble-monolith industrial design, minimal seams', a:8, js:1, c:'I' },
+    { t: 'Ambient information display vs. harsh numeric readouts', a:8, js:1, c:'I' }
+  ];
+  const ideas = ideasRaw.map((idea, idx) => ({ ...idea, id: idx }));
+  // Track the next available idea id so user-added ideas don't collide
+  let nextIdeaId = ideas.length;
+
+  const clusters = [
+    { id:'A', title:'Sensing & Detection',              insight:'Eyes & ears on the system. Every premium feature downstream depends on the quality of this layer.' },
+    { id:'B', title:'Predictive Intelligence',          insight:'Turning sensor data into foresight — life-remaining, depletion, failure signatures, comfort forecasts.' },
+    { id:'C', title:'Family-Aware Coordination',        insight:'Profiles, schedules, modes that treat the household as a multi-user system, not a single appliance.' },
+    { id:'D', title:'Physical Architecture & Plumbing', insight:'Hardware that handles the brutal physics: hard water, pressure swings, sediment, expansion, redundancy.' },
+    { id:'E', title:'Ambient & Visual Status',          insight:'Low-cognitive-load information design — LED rings, light strips, color cues, voice. No staring at numbers.' },
+    { id:'F', title:'Self-Care Routines',               insight:'Automated, scheduled hygiene & wear-reduction cycles the system runs on its own behalf.' },
+    { id:'G', title:'Household Behaviors & Rituals',    insight:'The free, zero-cost moves: rules, logs, walk-arounds, thermostat settings, replacement timing.' },
+    { id:'H', title:'Service & Business Model',         insight:'Subscriptions, AMCs, certified installs, modular moats. How the product earns trust and locks in LTV.' },
+    { id:'I', title:'Industrial Design Identity',       insight:'The brand-defining form factor — wall-integrated, seamless, ambient. The thing on the wall people point at.' },
+    { id:'J', title:'User-added (mid-vote)',            insight:'Ideas added during voting when an existing job step still felt unresolved. Live additions — not yet categorized into the main themes.' }
+  ];
+
+  const VOTE_BUDGET = 25;
+  const participants = [
+    { id:'P1', name:'Anaya', role:'Product Lead',     pc:'p1', budget:VOTE_BUDGET },
+    { id:'P2', name:'Ravi',  role:'Mech. Engineer',   pc:'p2', budget:VOTE_BUDGET },
+    { id:'P3', name:'Meera', role:'UX Designer',      pc:'p3', budget:VOTE_BUDGET },
+    { id:'P4', name:'Karan', role:'Field Service',    pc:'p4', budget:VOTE_BUDGET },
+    { id:'P5', name:'Diya',  role:'Customer Insight', pc:'p5', budget:VOTE_BUDGET }
+  ];
+
+  const votes = {};
+  ideas.forEach(i => { votes[i.id] = {}; participants.forEach(p => votes[i.id][p.id] = 0); });
+
+  let activeParticipant = participants[0].id;
+
+  // =================== LEGEND ===================
+  const legendHtml = areas.map(a =>
+    `<span class="legend-dot" style="--c: var(--${a.color})">${String(a.id).padStart(2,'0')} · ${a.short}</span>`
+  ).join('');
+  document.getElementById('legend').innerHTML = legendHtml;
+  document.getElementById('legend-vbar').innerHTML = legendHtml;
+
+  // =================== STAGE 1 — Wall with integrated voting ===================
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function dotsForIdea(ideaId) {
+    return participants.flatMap(p => {
+      const n = votes[ideaId][p.id];
+      return Array.from({length: n}, () =>
+        `<span class="placed-dot" style="--pc: var(--${p.pc});" title="${p.name}"></span>`
+      );
+    }).join('');
+  }
+
+  // =================== ADD / EDIT / DELETE user-contributed ideas ===================
+  function addUserIdea(areaId, stepN) {
+    const stepList = jobSteps[areaId] || [];
+    const step = stepList.find(s => s.n === stepN);
+    const stepLabel = step ? `${areaId}.${stepN} · ${step.title}` : `${areaId}.${stepN}`;
+    const text = prompt(`Add a new idea to job step ${stepLabel}:`);
+    if (!text) return;
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    const newIdea = {
+      id: nextIdeaId++,
+      t: trimmed,
+      a: areaId,
+      js: stepN,
+      c: 'J',           // routed to the "User-added (mid-vote)" affinity cluster
+      userAdded: true
+    };
+    ideas.push(newIdea);
+    votes[newIdea.id] = {};
+    participants.forEach(p => { votes[newIdea.id][p.id] = 0; });
+
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  }
+
+  function editUserIdea(ideaId) {
+    const idea = ideas.find(i => i.id === ideaId);
+    if (!idea || !idea.userAdded) return;
+    const text = prompt('Edit idea:', idea.t);
+    if (text === null) return;
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    idea.t = trimmed;
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  }
+
+  function deleteUserIdea(ideaId) {
+    const idea = ideas.find(i => i.id === ideaId);
+    if (!idea || !idea.userAdded) return;
+    const totalVotes = participants.reduce((s, p) => s + (votes[ideaId][p.id] || 0), 0);
+    const confirmMsg = totalVotes > 0
+      ? `Delete this idea? It currently has ${totalVotes} vote${totalVotes === 1 ? '' : 's'} which will be returned to participants' budgets.`
+      : 'Delete this idea?';
+    if (!confirm(confirmMsg)) return;
+    const idx = ideas.indexOf(idea);
+    if (idx >= 0) ideas.splice(idx, 1);
+    delete votes[ideaId];
+    renderParticipants();
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  }
+
+  function renderWallNotes() {
+    const activeBudget = participants.find(p => p.id === activeParticipant).budget;
+    const activeUsed = totalUsed(activeParticipant);
+    const budgetExhausted = activeUsed >= activeBudget;
+
+    document.getElementById('areas-container').innerHTML = areas.map(a => {
+      const steps = jobSteps[a.id] || [];
+      const myIdeas = ideas.filter(i => i.a === a.id);
+
+      const stepsHtml = steps.map(step => {
+        const stepIdeas = myIdeas.filter(i => i.js === step.n);
+        if (stepIdeas.length === 0) return '';
+        const targetsHtml = step.targets.length
+          ? `<div class="targets">${step.targets.map(([kind, txt]) =>
+              `<span class="target ${kind}">${kind.toUpperCase()} · ${escapeHtml(txt)}</span>`
+            ).join('')}</div>`
+          : '';
+        return `
+          <div class="job-step" style="--c: var(--${a.color});">
+            <span class="step-num">JOB STEP ${a.id}.${step.n} · ${stepIdeas.length} ideas</span>
+            <h4>${escapeHtml(step.title)}</h4>
+            <p>${escapeHtml(step.desc)}</p>
+            ${targetsHtml}
+          </div>
+          <div class="notes-grid">
+            ${stepIdeas.map(idea => {
+              const myVotes = votes[idea.id][activeParticipant];
+              const disabled = budgetExhausted && myVotes === 0;
+              const userTag = idea.userAdded ? '<span class="user-mark" title="Added during voting">✎ added</span>' : '';
+              const editControls = idea.userAdded
+                ? `<div class="note-controls">
+                     <button class="note-edit" data-idea="${idea.id}" title="Edit this idea">✎</button>
+                     <button class="note-delete" data-idea="${idea.id}" title="Delete this idea">×</button>
+                   </div>`
+                : '';
+              return `
+                <div class="note ${disabled ? 'disabled' : ''} ${idea.userAdded ? 'user-added' : ''}"
+                     style="background: var(--${a.color});"
+                     data-idea="${idea.id}">
+                  <span class="tag">${String(a.id).padStart(2,'0')}.${step.n} · ${a.short}${userTag ? ' · ' + userTag : ''}</span>
+                  <span class="body">${escapeHtml(idea.t)}</span>
+                  ${editControls}
+                  <div class="dots-overlay">${dotsForIdea(idea.id)}</div>
+                </div>
+              `;
+            }).join('')}
+            <button class="note-add"
+                    data-area="${a.id}"
+                    data-step="${step.n}"
+                    title="Add a new idea to this job step">
+              <span class="plus">+</span>
+              <span class="add-label">add idea</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="area-group">
+          <div class="area-header">
+            <div class="area-num">${String(a.id).padStart(2,'0')}</div>
+            <div class="area-swatch" style="--c: var(--${a.color})"></div>
+            <h3 class="area-title">${a.title}</h3>
+          </div>
+          <p class="area-sub">${a.sub} · ${steps.length} job step${steps.length===1?'':'s'} · ${myIdeas.length} ideas</p>
+          ${stepsHtml}
+        </div>
+      `;
+    }).join('');
+
+    // wire click-to-vote on notes (but skip clicks that originated on controls)
+    document.querySelectorAll('#areas-container .note').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.note-controls')) return;
+        const ideaId = parseInt(el.dataset.idea);
+        handleVote(ideaId, e.altKey);
+      });
+    });
+
+    // wire + buttons
+    document.querySelectorAll('#areas-container .note-add').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const a = parseInt(btn.dataset.area);
+        const js = parseInt(btn.dataset.step);
+        addUserIdea(a, js);
+      });
+    });
+
+    // wire edit/delete on user-added notes
+    document.querySelectorAll('#areas-container .note-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editUserIdea(parseInt(btn.dataset.idea));
+      });
+    });
+    document.querySelectorAll('#areas-container .note-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteUserIdea(parseInt(btn.dataset.idea));
+      });
+    });
+  }
+  renderWallNotes();
+
+  // =================== STAGE 2 — Affinity (with same voting overlay) ===================
+  function renderAffinity() {
+    const activeBudget = participants.find(p => p.id === activeParticipant).budget;
+    const activeUsed = totalUsed(activeParticipant);
+    const budgetExhausted = activeUsed >= activeBudget;
+
+    document.getElementById('clusters-container').innerHTML = clusters.map(cl => {
+      const myIdeas = ideas.filter(i => i.c === cl.id);
+      if (myIdeas.length === 0) return '';
+      return `
+        <div class="cluster-block">
+          <div class="cluster-banner">
+            <span class="cluster-num">CLUSTER ${cl.id} · ${myIdeas.length} notes</span>
+            <h3 class="cluster-title">${escapeHtml(cl.title)}</h3>
+            <p class="cluster-insight">${escapeHtml(cl.insight)}</p>
+          </div>
+          <div class="cluster-notes-flow">
+            ${myIdeas.map(idea => {
+              const area = areas.find(ar => ar.id === idea.a);
+              const myVotes = votes[idea.id][activeParticipant];
+              const disabled = budgetExhausted && myVotes === 0;
+              const editControls = idea.userAdded
+                ? `<div class="note-controls">
+                     <button class="note-edit" data-idea="${idea.id}" title="Edit this idea">✎</button>
+                     <button class="note-delete" data-idea="${idea.id}" title="Delete this idea">×</button>
+                   </div>`
+                : '';
+              return `
+                <div class="aff-note ${disabled ? 'disabled' : ''} ${idea.userAdded ? 'user-added' : ''}"
+                     style="background: var(--${area.color});"
+                     data-idea="${idea.id}">
+                  <span class="origin">A${idea.a} · ${area.short}${idea.userAdded ? ' · ✎ added' : ''}</span>
+                  <span class="text">${escapeHtml(idea.t)}</span>
+                  ${editControls}
+                  <div class="dots-overlay">${dotsForIdea(idea.id)}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    document.querySelectorAll('#clusters-container .aff-note').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.note-controls')) return;
+        const ideaId = parseInt(el.dataset.idea);
+        handleVote(ideaId, e.altKey);
+      });
+    });
+    document.querySelectorAll('#clusters-container .note-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editUserIdea(parseInt(btn.dataset.idea));
+      });
+    });
+    document.querySelectorAll('#clusters-container .note-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteUserIdea(parseInt(btn.dataset.idea));
+      });
+    });
+  }
+  renderAffinity();
+
+  // =================== VOTING ENGINE ===================
+  function totalUsed(pid) {
+    return ideas.reduce((sum, idea) => sum + votes[idea.id][pid], 0);
+  }
+
+  function renderParticipants() {
+    const c = document.getElementById('participants');
+    c.innerHTML = participants.map(p => {
+      const used = totalUsed(p.id);
+      const pct = Math.round((used / p.budget) * 100);
+      return `
+        <div class="participant ${p.id === activeParticipant ? 'active' : ''}"
+             style="--pc: var(--${p.pc});"
+             data-pid="${p.id}">
+          <div class="p-top">
+            <div class="dot"></div>
+            <div class="p-budget"><span class="used">${used}</span>/${p.budget}</div>
+          </div>
+          <div class="p-name">${p.id} · ${p.name}</div>
+          <div class="p-role">${p.role}</div>
+          <div class="budget-bar"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+      `;
+    }).join('');
+    c.querySelectorAll('.participant').forEach(el => {
+      el.addEventListener('click', () => {
+        activeParticipant = el.dataset.pid;
+        renderParticipants();
+        updateActiveAsBadge();
+        renderWallNotes();
+        renderAffinity();
+      });
+    });
+  }
+
+  function updateActiveAsBadge() {
+    const p = participants.find(p => p.id === activeParticipant);
+    const badge = document.getElementById('active-as');
+    badge.textContent = `${p.id} · ${p.name}`;
+    badge.style.background = `var(--${p.pc})`;
+  }
+
+  function handleVote(ideaId, altPressed) {
+    const myVotes = votes[ideaId][activeParticipant];
+    const activeBudget = participants.find(p => p.id === activeParticipant).budget;
+    const activeUsed = totalUsed(activeParticipant);
+
+    if (altPressed) {
+      if (activeUsed < activeBudget) {
+        votes[ideaId][activeParticipant]++;
+      } else {
+        flashBudgetWarning();
+        return;
+      }
+    } else {
+      if (myVotes > 0) {
+        votes[ideaId][activeParticipant]--;
+      } else if (activeUsed < activeBudget) {
+        votes[ideaId][activeParticipant]++;
+      } else {
+        flashBudgetWarning();
+        return;
+      }
+    }
+    renderParticipants();
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  }
+
+  function flashBudgetWarning() {
+    const inst = document.getElementById('vote-instructions');
+    if (inst) {
+      inst.animate([
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-4px)' },
+        { transform: 'translateX(4px)' },
+        { transform: 'translateX(-2px)' },
+        { transform: 'translateX(0)' }
+      ], { duration: 300 });
+    }
+    // Also flash the active participant tag in red
+    const activeEl = document.querySelector('.participant.active');
+    if (activeEl) {
+      const origBorder = activeEl.style.borderColor;
+      const origShadow = activeEl.style.boxShadow;
+      activeEl.style.borderColor = 'var(--p1)';
+      activeEl.style.boxShadow = '0 0 0 2px rgba(214,48,39,0.25), 0 2px 6px rgba(40,28,14,0.18)';
+      setTimeout(() => {
+        activeEl.style.borderColor = origBorder;
+        activeEl.style.boxShadow = origShadow;
+      }, 600);
+    }
+  }
+
+  function renderLeaderboard() {
+    const lb = document.getElementById('leaderboard');
+    const scored = ideas.map(idea => {
+      const total = participants.reduce((s, p) => s + votes[idea.id][p.id], 0);
+      return { idea, total };
+    }).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
+
+    // Enable/disable download button based on whether anything's voted
+    const dlBtn = document.getElementById('download-leaderboard');
+    if (dlBtn) dlBtn.disabled = scored.length === 0;
+
+    if (scored.length === 0) {
+      lb.innerHTML = '<li class="lb-empty">No votes yet — start placing dots →</li>';
+      return;
+    }
+
+    // Render only top 20 to UI (keeps the leaderboard compact);
+    // the CSV export below will pull the full scored list.
+    lb.innerHTML = scored.slice(0, 20).map(({idea, total}) => {
+      const dots = participants.flatMap(p => {
+        const n = votes[idea.id][p.id];
+        return Array.from({length: n}, () =>
+          `<span class="mini-dot" style="--pc: var(--${p.pc});"></span>`
+        );
+      }).join('');
+      return `
+        <li class="lb-item">
+          <span class="lb-text">${escapeHtml(idea.t)}</span>
+          <span class="lb-votes">${dots}<span class="lb-count">${total}</span></span>
+        </li>
+      `;
+    }).join('');
+  }
+
+  // =================== CSV DOWNLOAD ===================
+  function csvEscape(value) {
+    const s = String(value == null ? '' : value);
+    // Wrap in quotes if it contains quote, comma, newline, or carriage return.
+    // Inside, double up any quotes per RFC 4180.
+    if (/[",\r\n]/.test(s)) {
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+  }
+
+  function buildLeaderboardCsv() {
+    const scored = ideas.map(idea => {
+      const total = participants.reduce((s, p) => s + votes[idea.id][p.id], 0);
+      return { idea, total };
+    }).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
+
+    const headers = ['Sr No', 'Job Step Description', 'Idea Description', 'No of Votes'];
+    const rows = scored.map(({idea, total}, idx) => {
+      const stepList = jobSteps[idea.a] || [];
+      const step = stepList.find(s => s.n === idea.js);
+      // Use the descriptive `desc` from the brief if available;
+      // fall back to the short `title` when desc is missing.
+      const stepDescription = step ? (step.desc || step.title) : '';
+      return [idx + 1, stepDescription, idea.t, total];
+    });
+
+    // Prepend BOM so Excel opens UTF-8 correctly
+    return '\uFEFF' + [headers, ...rows]
+      .map(row => row.map(csvEscape).join(','))
+      .join('\r\n');
+  }
+
+  function downloadLeaderboardCsv() {
+    const csv = buildLeaderboardCsv();
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+    a.href = url;
+    a.download = `leaderboard-${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  document.getElementById('download-leaderboard').addEventListener('click', downloadLeaderboardCsv);
+
+  document.getElementById('reset-me').addEventListener('click', () => {
+    ideas.forEach(idea => { votes[idea.id][activeParticipant] = 0; });
+    renderParticipants();
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  });
+  document.getElementById('reset-all').addEventListener('click', () => {
+    if (!confirm('Clear every vote from every participant?')) return;
+    ideas.forEach(idea => participants.forEach(p => { votes[idea.id][p.id] = 0; }));
+    renderParticipants();
+    renderWallNotes();
+    renderAffinity();
+    renderLeaderboard();
+  });
+
+  renderParticipants();
+  updateActiveAsBadge();
+  renderLeaderboard();
+
+  // =================== TABS ===================
+  function setActiveView(view) {
+    document.getElementById('wall').classList.toggle('active', view === 'wall');
+    document.getElementById('affinity').classList.toggle('active', view === 'affinity');
+    document.body.classList.toggle('wall-active', view === 'wall');
+    document.body.classList.toggle('affinity-active', view === 'affinity');
+  }
+  // Initial state: wall is active
+  setActiveView('wall');
+
+  const tabs = document.querySelectorAll('.stage-tabs button');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setActiveView(btn.dataset.view);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
