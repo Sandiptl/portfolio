@@ -1141,7 +1141,7 @@ body {
 }
 .bs-sol-body em { color: var(--teal); font-style: italic; }
 
-/* Subtle additive note used on df3/df6/df10 */
+/* Subtle additive note used on df3/df6 */
 .addnote {
   background: var(--band);
   border-left: 3px solid var(--seafoam);
@@ -2370,8 +2370,6 @@ body {
         <button class="el-item" data-stage="2" data-el="df6"><span class="el-item-num">05</span><span class="el-item-text">Engineering PRD</span></button>
         <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">06</span><span class="el-item-text">QFD Level 1</span></button>
         <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">07</span><span class="el-item-text">DFMEA 1–3</span></button>
-        <button class="el-item" data-stage="2" data-el="df10"><span class="el-item-num">08</span><span class="el-item-text">Preliminary architecture</span></button>
-        <button class="el-item" data-stage="2" data-el="df9"><span class="el-item-num">09</span><span class="el-item-text">Master BOM (Miro)</span></button>
       </div>
     </div>
 
@@ -2464,8 +2462,6 @@ body {
         <button class="el-item" data-stage="2" data-el="df6"><span class="el-item-num">05</span><span class="el-item-text">Engineering PRD</span></button>
         <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">06</span><span class="el-item-text">QFD Level 1</span></button>
         <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">07</span><span class="el-item-text">DFMEA 1–3 with DSM</span></button>
-        <button class="el-item" data-stage="2" data-el="df10"><span class="el-item-num">08</span><span class="el-item-text">Preliminary architecture</span></button>
-        <button class="el-item" data-stage="2" data-el="df9"><span class="el-item-num">09</span><span class="el-item-text">Master BOM (sub-system level) with DSM in Miro</span></button>
       </div>
     </div>
     <!-- Gateway 2: PRD & Final Render -->
@@ -3840,39 +3836,6 @@ body {
     <div class="tbd-card-icon">⚠️</div>
     <h3>Failure-mode register linked to risk roll-up</h3>
     <p>Three DFMEA layers — system, sub-system, component — plus a Design Structure Matrix showing inter-component dependencies. The high-RPN items feed Gateway 2's risk mitigation evidence.</p>
-  </div>
-</template>
-
-<template id="el-df9">
-  <div class="detail-stage-indicator" data-stage="2"><span class="indicator-dot"></span>Stage 02 · Define</div>
-  <div class="detail-header">
-    <div class="detail-kicker">Master BOM (sub-system level) · Miro</div>
-    <h2 class="detail-title">Bill of Materials with DSM dependencies in Miro</h2>
-    <div class="detail-subtitle">Sub-system BOM laid out as a visual graph showing what depends on what — input into procurement and prototype planning.</div>
-  </div>
-  <div class="tbd-card">
-    <div class="tbd-card-icon">📦</div>
-    <h3>Miro board pending embed</h3>
-    <p>The interactive Miro board will be linked here once finalised. It shows the BOM as a directed graph: tank module → control electronics → user interface → smart connectivity → safety subsystem.</p>
-  </div>
-</template>
-
-<template id="el-df10">
-  <div class="detail-stage-indicator" data-stage="2"><span class="indicator-dot"></span>Stage 02 · Define</div>
-  <div class="detail-header">
-    <div class="detail-kicker">Preliminary Architecture</div>
-    <h2 class="detail-title">System architecture — modular boundaries and interfaces</h2>
-    <div class="detail-subtitle">High-level block diagram showing thermal, mechatronics, UX, and safety subsystems with their interface contracts.</div>
-  </div>
-  <div class="tbd-card">
-    <div class="tbd-card-icon">🏗️</div>
-    <h3>Architecture diagram in finalisation</h3>
-    <p>The preliminary architecture is what locks at Gateway 2 alongside the PRD. It defines the modular boundaries that let Develop's two prototypes (Thermal Module + Mechatronics) be built and tested in parallel.</p>
-  </div>
-
-  <div class="addnote">
-    <span class="addnote-kicker">Sub-system hierarchy · Carries into DFMEA Step 2</span>
-    Three top-level sub-systems with explicit interface contracts: <strong>(1) Thermal</strong> — twin tanks, Z-Bridge, refrigerant loop, insulation jacket; <strong>(2) Housing</strong> — Class-A surfaced shell, internal packaging, service access; <strong>(3) Control</strong> — PEMS firmware, IoT telemetry, ELCB + dry-fire safety chain. This same hierarchy becomes the parent-child structure in DFMEA Step 2 (Structure Analysis) when the Develop diamond opens.
   </div>
 </template>
 
