@@ -1629,6 +1629,37 @@ body {
 .gw-section {
   margin-bottom: 24px;
 }
+.gw-artifact {
+  margin-bottom: 28px;
+}
+.gw-artifact h5 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gw-artifact .tbd-tag-inline {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--stage3-tint);
+  color: var(--stage3-deep);
+}
+.gw-artifact .journey-layer-figure {
+  margin-top: 8px;
+}
+.gw-artifact-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 .gw-section h4 {
   font-family: var(--font-display);
   font-weight: 600;
@@ -2367,9 +2398,8 @@ body {
         <button class="el-item" data-stage="2" data-el="df2"><span class="el-item-num">02</span><span class="el-item-text">Future-state journey</span></button>
         <button class="el-item" data-stage="2" data-el="df4"><span class="el-item-num">03</span><span class="el-item-text">Proposed VPC</span></button>
         <button class="el-item" data-stage="2" data-el="df5"><span class="el-item-num">04</span><span class="el-item-text">Proposed BMC</span></button>
-        <button class="el-item" data-stage="2" data-el="df6"><span class="el-item-num">05</span><span class="el-item-text">Engineering PRD</span></button>
-        <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">06</span><span class="el-item-text">QFD Level 1</span></button>
-        <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">07</span><span class="el-item-text">DFMEA 1–3</span></button>
+        <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">05</span><span class="el-item-text">QFD Level 1</span></button>
+        <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">06</span><span class="el-item-text">DFMEA 1–3 with DSM</span></button>
       </div>
     </div>
 
@@ -2459,9 +2489,8 @@ body {
         <button class="el-item" data-stage="2" data-el="df2"><span class="el-item-num">02</span><span class="el-item-text">Future-state user journey sketches</span></button>
         <button class="el-item" data-stage="2" data-el="df4"><span class="el-item-num">03</span><span class="el-item-text">Proposed VPC</span></button>
         <button class="el-item" data-stage="2" data-el="df5"><span class="el-item-num">04</span><span class="el-item-text">Proposed BMC</span></button>
-        <button class="el-item" data-stage="2" data-el="df6"><span class="el-item-num">05</span><span class="el-item-text">Engineering PRD</span></button>
-        <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">06</span><span class="el-item-text">QFD Level 1</span></button>
-        <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">07</span><span class="el-item-text">DFMEA 1–3 with DSM</span></button>
+        <button class="el-item" data-stage="2" data-el="df7"><span class="el-item-num">05</span><span class="el-item-text">QFD Level 1</span></button>
+        <button class="el-item" data-stage="2" data-el="df8"><span class="el-item-num">06</span><span class="el-item-text">DFMEA 1–3 with DSM</span></button>
       </div>
     </div>
     <!-- Gateway 2: PRD & Final Render -->
@@ -3829,13 +3858,15 @@ body {
   <div class="detail-stage-indicator" data-stage="2"><span class="indicator-dot"></span>Stage 02 · Define</div>
   <div class="detail-header">
     <div class="detail-kicker">DFMEA 1–3 with DSM</div>
-    <h2 class="detail-title">Design FMEA layers 1–3 with Design Structure Matrix</h2>
-    <div class="detail-subtitle">System-level failure modes, mapped to dependency relationships via DSM.</div>
+    <h2 class="detail-title">Design FMEA Steps 1–3 with DSM coupling</h2>
+    <div class="detail-subtitle">Planning, structure analysis, and function analysis — with sub-system steps mapped to the Design Structure Matrix and coupling-priority results.</div>
   </div>
-  <div class="tbd-card">
-    <div class="tbd-card-icon">⚠️</div>
-    <h3>Failure-mode register linked to risk roll-up</h3>
-    <p>Three DFMEA layers — system, sub-system, component — plus a Design Structure Matrix showing inter-component dependencies. The high-RPN items feed Gateway 2's risk mitigation evidence.</p>
+  <div class="journey-layer-figure">
+    <img src="DFMEA-Steps-1-3-with-DSM.png" alt="DFMEA Steps 1–3 with DSM — planning, structure, and function analysis">
+  </div>
+  <div class="addnote">
+    <span class="addnote-kicker">Define · Risk before Gateway 2</span>
+    Steps 1–3 establish the failure-mode register and DSM-backed dependencies before the PRD and Part Master lock at <strong>Gateway 02</strong>. High-RPN items carry forward as mitigation evidence in Develop.
   </div>
 </template>
 
@@ -3947,39 +3978,69 @@ body {
   <div class="modal-head">
     <div class="modal-head-meta">
       <div class="modal-kicker">Gateway 02 · Define → Develop · The Big One</div>
-      <h3 class="modal-title">Product Requirements Document &amp; Final ID Render</h3>
+      <h3 class="modal-title">PRD, Part Master &amp; Final ID Render</h3>
     </div>
     <button class="modal-close" aria-label="close">×</button>
   </div>
   <div class="modal-body">
     <p style="font-size:0.98rem;line-height:1.7;color:var(--body);margin:0 0 24px;">
-      This is the locking moment between the two diamonds. Everything Discover learned, everything Define narrowed, gets compiled into two artifacts: a versioned <strong>Product Requirements Document</strong> and a signed-off <strong>final industrial design render</strong>. From here forward, every Develop decision must trace back to a line in this PRD.
+      The locking moment between the two diamonds. The <strong>Engineering PRD</strong> and <strong>Part Master</strong> are promoted here from Define — they no longer sit as element cards above. Together with the signed-off <strong>final industrial design render</strong>, these artifacts authorise every Develop prototype, CAD model, and PPAP document.
     </p>
 
     <div class="gw-section">
-      <h4>Contents of the PRD package</h4>
-      <ul class="gw-list">
-        <li><span class="gw-bullet">A</span><span><strong>Executive summary &amp; product vision</strong> — the one-pager that aligns the team.</span></li>
-        <li><span class="gw-bullet">B</span><span><strong>Functional requirements</strong> — derived from JTBD opportunity scores, weighted in QFD Level 1.</span></li>
-        <li><span class="gw-bullet">C</span><span><strong>Non-functional requirements</strong> — efficiency, durability, serviceability, aesthetics, safety thresholds.</span></li>
-        <li><span class="gw-bullet">D</span><span><strong>Regulatory &amp; compliance matrix</strong> — BIS, BEE, ELCB, T&amp;P, dry-fire, refrigerant standards.</span></li>
-        <li><span class="gw-bullet">E</span><span><strong>SKU strategy</strong> — Good (resistive smart) and Pro (heat-pump smart) variants with target price bands.</span></li>
-        <li><span class="gw-bullet">F</span><span><strong>Final ID render</strong> — selected design direction with material, finish, dimension call-outs.</span></li>
-        <li><span class="gw-bullet">G</span><span><strong>Preliminary architecture</strong> — modular boundaries and interface contracts that let Develop work in parallel streams.</span></li>
-      </ul>
+      <h4>Gateway 2 artifacts</h4>
+
+      <div class="gw-artifact">
+        <h5>Final ID render <span class="tbd-tag-inline">WIP</span></h5>
+        <p style="font-size:0.92rem;line-height:1.6;color:var(--muted);margin:0 0 8px;">
+          Selected design direction with material, finish, and dimension call-outs — in finalisation for sign-off.
+        </p>
+        <div class="tbd-card" style="margin:0">
+          <div class="tbd-card-icon">🎨</div>
+          <h3>Final render package pending</h3>
+          <p>Photo-real ID renders and collage boards will be embedded here when the industrial design direction locks.</p>
+        </div>
+      </div>
+
+      <div class="gw-artifact">
+        <h5>Engineering PRD</h5>
+        <p style="font-size:0.92rem;line-height:1.6;color:var(--muted);margin:0 0 8px;">
+          Versioned requirements package (27 May 2026) — functional, non-functional, regulatory, and SKU strategy traceable to QFD Level 1.
+        </p>
+        <div class="journey-layer-figure">
+          <img src="Engineering-PRD-27May2026.png" alt="Engineering PRD — 27 May 2026">
+        </div>
+        <div class="gw-artifact-actions">
+          <a class="gw-download-btn" href="Engineering_PRD_27May2026.docx" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download Engineering PRD (.docx)
+          </a>
+        </div>
+      </div>
+
+      <div class="gw-artifact">
+        <h5>Part Master</h5>
+        <p style="font-size:0.92rem;line-height:1.6;color:var(--muted);margin:0 0 8px;">
+          Twin-tank atmospheric water heater — sub-system skeleton for Gateway 2. Single source of truth for EBOM, MBOM, DFMEA, service BOM, and cost views in Develop.
+        </p>
+        <div class="journey-layer-figure">
+          <img src="Part-Master-Twin-Tank-Water-Heater.png" alt="Part Master — Twin-Tank Water Heater">
+        </div>
+        <div class="gw-artifact-actions">
+          <a class="gw-download-btn" href="Part_Master_Twin_Tank_Water_Heater.xlsx" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Download Part Master (.xlsx)
+          </a>
+        </div>
+      </div>
     </div>
 
     <div class="gw-section">
       <h4>Why this gateway glows</h4>
-      <p style="font-size:0.95rem;line-height:1.65;color:var(--body);margin:0 0 14px;">
-        It's the only gateway whose artifact <em>does not</em> appear as an element card in the stage above — because it lives here, at the seam between problem space and solution space. Reviewing this artifact authorises every prototype, every CAD model, every PPAP document that comes later. If a Develop or Deliver decision can't be traced back to this PRD, it shouldn't exist.
+      <p style="font-size:0.95rem;line-height:1.65;color:var(--body);margin:0;">
+        The PRD and Part Master deliberately live here — not in the Define element rail — because they lock at the seam between problem space and solution space. If a Develop or Deliver decision cannot trace back to this gateway package, it should not exist.
       </p>
     </div>
-
-    <button class="gw-download-btn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      Download PRD v1.0 + Final ID render package
-    </button>
   </div>
 </template>
 
